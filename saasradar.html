@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaaSRadar</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f4ff;--border:rgba(99,120,210,0.18);--text:#1a1d2e;--muted:#6b7280;--accent:#4361ee;
+  --shadow:0 6px 28px rgba(67,97,238,0.11);--shadow-lg:0 12px 40px rgba(67,97,238,0.18);
+  --input:#7c3aed;--clean:#0891b2;--ref:#d97706;--map:#059669;--classify:#e11d48;--output:#ca8a04;
+}
+body{background:var(--bg);background-image:radial-gradient(ellipse 70% 50% at 5% 0%,rgba(124,58,237,0.10) 0%,transparent 55%),radial-gradient(ellipse 55% 45% at 95% 100%,rgba(67,97,238,0.10) 0%,transparent 55%);background-attachment:fixed;color:var(--text);font-family:'Segoe UI','SF Pro Display','Helvetica Neue',Arial,sans-serif;min-height:100vh;padding:44px 20px 70px;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(99,120,210,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(99,120,210,0.04) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0}
+.wrapper{position:relative;z-index:1;max-width:960px;margin:0 auto}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 5%;background:rgba(240,244,255,0.82);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);box-shadow:0 2px 12px rgba(67,97,238,0.07)}
+nav a{text-decoration:none;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);transition:color 0.2s}
+nav a:hover{color:var(--accent)}
+.nav-id{font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)}
+
+.header{text-align:center;margin-bottom:52px;animation:fadeDown 0.7s ease both}
+.eyebrow{font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+h1{font-size:clamp(28px,5vw,48px);font-weight:800;line-height:1.1;background:linear-gradient(135deg,#1a1d2e 30%,var(--input) 70%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{font-family:'Courier New',monospace;font-size:12px;color:var(--muted);margin-top:10px;letter-spacing:0.05em}
+.desc{font-family:'Courier New',monospace;font-size:12px;color:#374151;max-width:620px;margin:18px auto 0;line-height:1.8;letter-spacing:0.02em}
+
+.trigger-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:30px;animation:fadeDown 0.7s 0.1s ease both}
+.pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.75);border:1px solid var(--border);border-radius:100px;padding:9px 20px;font-size:12px;font-weight:600;letter-spacing:0.04em;backdrop-filter:blur(12px);box-shadow:var(--shadow);color:var(--text)}
+.dot{width:7px;height:7px;border-radius:50%;animation:pulse 2s infinite}
+.d-purple{background:var(--input);box-shadow:0 0 8px var(--input)}
+.d-green{background:var(--map);box-shadow:0 0 8px var(--map)}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+
+.conn{display:flex;justify-content:center;height:24px;margin:-3px 0;opacity:0.3}
+.conn-line{width:2px;background:linear-gradient(to bottom,rgba(67,97,238,0.6),rgba(67,97,238,0.1));border-radius:2px}
+.conn-split{width:58%;height:24px;position:relative}
+.conn-split::before,.conn-split::after{content:'';position:absolute;top:0;width:2px;height:100%;background:linear-gradient(to bottom,rgba(67,97,238,0.5),rgba(67,97,238,0.08));border-radius:2px}
+.conn-split::before{left:24%}.conn-split::after{right:24%}
+.conn-merge{width:58%;height:24px;position:relative}
+.conn-merge::before,.conn-merge::after{content:'';position:absolute;bottom:0;width:2px;height:100%;background:linear-gradient(to top,rgba(67,97,238,0.5),rgba(67,97,238,0.08));border-radius:2px}
+.conn-merge::before{left:24%}.conn-merge::after{right:24%}
+
+.sl{font-family:'Courier New',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:var(--muted);display:flex;align-items:center;gap:12px;margin:26px 0 14px}
+.sl::before,.sl::after{content:'';flex:1;height:1px;background:rgba(67,97,238,0.15)}
+
+.card{border-radius:16px;padding:22px 24px;border:1px solid var(--border);position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;backdrop-filter:blur(14px)}
+.card:hover{transform:translateY(-3px)}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;opacity:0;transition:opacity 0.3s;pointer-events:none}
+.card:hover::before{opacity:1}
+.card-icon{font-size:22px;margin-bottom:10px;display:block}
+.card-label{font-family:'Courier New',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.16em;margin-bottom:6px}
+.card-title{font-size:16px;font-weight:700;margin-bottom:8px;line-height:1.2;color:var(--text)}
+.card-desc{font-family:'Courier New',monospace;font-size:11px;color:var(--muted);line-height:1.65}
+.tag{display:inline-flex;font-family:'Courier New',monospace;font-size:10px;padding:3px 10px;border-radius:100px;margin-top:10px;border:1px solid currentColor;opacity:0.7}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.chip{font-family:'Courier New',monospace;font-size:10px;padding:4px 11px;border-radius:6px;letter-spacing:0.04em}
+
+.c-input{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(245,243,255,0.92));border-color:rgba(124,58,237,0.2);box-shadow:0 4px 20px rgba(124,58,237,0.08)}
+.c-input::before{background:radial-gradient(ellipse at top left,rgba(124,58,237,0.09),transparent 70%)}
+.c-input:hover{box-shadow:0 10px 32px rgba(124,58,237,0.16)}
+.col-input{color:var(--input)}.chip-input{background:rgba(124,58,237,0.07);border:1px solid rgba(124,58,237,0.18);color:var(--input)}
+
+.c-ref{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(255,251,235,0.92));border-color:rgba(217,119,6,0.2);box-shadow:0 4px 20px rgba(217,119,6,0.08)}
+.c-ref::before{background:radial-gradient(ellipse at top right,rgba(217,119,6,0.09),transparent 70%)}
+.c-ref:hover{box-shadow:0 10px 32px rgba(217,119,6,0.16)}
+.col-ref{color:var(--ref)}.chip-ref{background:rgba(217,119,6,0.07);border:1px solid rgba(217,119,6,0.18);color:var(--ref)}
+
+.c-clean{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(236,254,255,0.92));border-color:rgba(8,145,178,0.2);box-shadow:0 4px 20px rgba(8,145,178,0.08)}
+.c-clean::before{background:radial-gradient(ellipse at center,rgba(8,145,178,0.09),transparent 70%)}
+.c-clean:hover{box-shadow:0 10px 32px rgba(8,145,178,0.16)}
+.col-clean{color:var(--clean)}.chip-clean{background:rgba(8,145,178,0.07);border:1px solid rgba(8,145,178,0.18);color:var(--clean)}
+
+.c-map{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(236,253,245,0.92));border-color:rgba(5,150,105,0.2);box-shadow:0 4px 20px rgba(5,150,105,0.08)}
+.c-map::before{background:radial-gradient(ellipse at bottom,rgba(5,150,105,0.09),transparent 70%)}
+.c-map:hover{box-shadow:0 10px 32px rgba(5,150,105,0.16)}
+.col-map{color:var(--map)}.chip-map{background:rgba(5,150,105,0.07);border:1px solid rgba(5,150,105,0.18);color:var(--map)}
+
+.c-classify{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(255,241,245,0.92));border-color:rgba(225,29,72,0.2);box-shadow:0 4px 20px rgba(225,29,72,0.08)}
+.c-classify::before{background:radial-gradient(ellipse at top,rgba(225,29,72,0.09),transparent 70%)}
+.c-classify:hover{box-shadow:0 10px 32px rgba(225,29,72,0.16)}
+.col-classify{color:var(--classify)}.chip-classify{background:rgba(225,29,72,0.07);border:1px solid rgba(225,29,72,0.18);color:var(--classify)}
+
+.c-output{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(254,252,232,0.92));border-color:rgba(202,138,4,0.2);box-shadow:0 4px 20px rgba(202,138,4,0.08)}
+.c-output:hover{box-shadow:0 10px 32px rgba(202,138,4,0.18)}
+.col-output{color:var(--output)}.chip-output{background:rgba(202,138,4,0.07);border:1px solid rgba(202,138,4,0.18);color:var(--output)}
+
+.row-1{margin-bottom:16px}.row-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+
+.legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:44px;animation:fadeUp .6s .7s ease both}
+.legend-item{display:flex;align-items:center;gap:7px;font-family:'Courier New',monospace;font-size:10px;color:var(--muted)}
+.ldot{width:8px;height:8px;border-radius:2px}
+
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.a1{animation:fadeUp .65s .12s ease both}.a2{animation:fadeUp .65s .20s ease both}
+.a3{animation:fadeUp .65s .28s ease both}.a4{animation:fadeUp .65s .36s ease both}
+.a5{animation:fadeUp .65s .44s ease both}.a6{animation:fadeUp .65s .52s ease both}
+
+@media(max-width:640px){.row-2,.row-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html">← Back to Portfolio</a>
+  <span class="nav-id">Nikhil KG · SaaSRadar</span>
+</nav>
+<div style="height:54px"></div>
+<div class="wrapper">
+
+  <div class="header">
+    <div class="eyebrow">Python · ProductMapper · SaaSRadar</div>
+    <h1>SaaSRadar</h1>
+    <div class="sub">Transaction &amp; SSO Description → Classify → Excel Output</div>
+    <p class="desc">A Python automation that scans raw transaction and SSO descriptions to identify known SaaS products. It cleans each description, generates n-gram combinations, and matches them against a product database. Unmatched rows are further classified — flagged as ignore words, uncommon terms, or potential new SaaS entities not yet in the database — with all results colour-coded and written back to Excel.</p>
+  </div>
+
+  <div class="trigger-row">
+    <div class="pill"><span class="dot d-purple"></span>🖥️ &nbsp;Tkinter UI — Manual Trigger</div>
+    <div class="pill"><span class="dot d-green"></span>⚙️ &nbsp;run_product_mapper() — Programmatic</div>
+  </div>
+
+  <div class="conn"><div class="conn-line"></div></div>
+
+  <div class="sl">① Input</div>
+  <div class="row-2 a1">
+    <div class="card c-input">
+      <span class="card-icon">📂</span>
+      <div class="card-label col-input">Master File</div>
+      <div class="card-title">Transaction / SSO File</div>
+      <div class="card-desc">User selects an Excel (.xlsx) or CSV file containing raw transaction or SSO descriptions. CSV files are auto-converted to .xlsx before processing.</div>
+      <span class="tag col-input">.xlsx / .csv</span>
+    </div>
+    <div class="card c-ref">
+      <span class="card-icon">📚</span>
+      <div class="card-label col-ref">Reference Data</div>
+      <div class="card-title">Products &amp; Ignore Words DB</div>
+      <div class="card-desc">Two reference workbooks loaded at startup — a known SaaS products list and an ignore-words list used to flag and archive irrelevant transactions.</div>
+      <div class="chips">
+        <span class="chip chip-ref">products.xlsx</span>
+        <span class="chip chip-ref">ignorewords.xlsx</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="conn"><div class="conn-line"></div></div>
+
+  <div class="sl">② Filter &amp; Clean</div>
+  <div class="row-1 a2">
+    <div class="card c-clean">
+      <span class="card-icon">🧹</span>
+      <div class="card-label col-clean">Pre-processing</div>
+      <div class="card-title">Filter Unrecognised Rows &amp; Data Cleaning</div>
+      <div class="card-desc">Unrecognised rows are isolated into an intermediate file. Each description is then deep-cleaned before NLP matching begins.</div>
+      <div class="chips">
+        <span class="chip chip-clean">Strip URLs &amp; Emails</span>
+        <span class="chip chip-clean">Remove Alphanumerics</span>
+        <span class="chip chip-clean">Strip Months &amp; Numbers</span>
+        <span class="chip chip-clean">Remove Short Words (&lt;3 chars)</span>
+        <span class="chip chip-clean">Remove Stop Words</span>
+        <span class="chip chip-clean">Normalise Whitespace</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="conn"><div class="conn-line"></div></div>
+
+  <div class="sl">③ NLP Matching Engine</div>
+  <div class="row-1 a3">
+    <div class="card c-map">
+      <span class="card-icon">🔍</span>
+      <div class="card-label col-map">n-gram Search</div>
+      <div class="card-title">Product Lookup via N-gram Combinations</div>
+      <div class="card-desc">For each cleaned description, 1–3 word n-gram combinations are generated and searched against the indexed products database using fast hash-map lookups.</div>
+      <div class="chips">
+        <span class="chip chip-map">Unigrams</span>
+        <span class="chip chip-map">Bigrams</span>
+        <span class="chip chip-map">Trigrams</span>
+        <span class="chip chip-map">build_index()</span>
+        <span class="chip chip-map">search_value_in_array()</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="conn"><div class="conn-split"></div></div>
+
+  <div class="sl">④ Classification</div>
+  <div class="row-3 a4">
+    <div class="card c-map">
+      <span class="card-icon">✅</span>
+      <div class="card-label col-map">Match Found</div>
+      <div class="card-title">SaaS Product Identified</div>
+      <div class="card-desc">Description matches one or more known products. Tagged as SPV (single match) or MPV / MULTIPLE_PRODUCTS.</div>
+      <div class="chips">
+        <span class="chip chip-map">SPV</span>
+        <span class="chip chip-map">MPV</span>
+        <span class="chip chip-map">MULTIPLE_PRODUCTS</span>
+      </div>
+    </div>
+    <div class="card c-classify">
+      <span class="card-icon">🏷️</span>
+      <div class="card-label col-classify">Special Flags</div>
+      <div class="card-title">Ignore / Uncommon / Entity</div>
+      <div class="card-desc">Descriptions that don't match products are further classified — archived if they contain ignore words, flagged if words are uncommon, or probed for new entity patterns.</div>
+      <div class="chips">
+        <span class="chip chip-classify">IGNORE_WORDS</span>
+        <span class="chip chip-classify">UNCOMMON_WORD</span>
+        <span class="chip chip-classify">ENTITY_FOUND</span>
+        <span class="chip chip-classify">SPEND_KEYWORD</span>
+      </div>
+    </div>
+    <div class="card c-input">
+      <span class="card-icon">🆕</span>
+      <div class="card-label col-input">Discovery</div>
+      <div class="card-title">New SaaS Entity Detection</div>
+      <div class="card-desc">Regex pattern matching on remaining unclassified words extracts potential new SaaS product names not yet in the database — surfacing them for review.</div>
+      <div class="chips">
+        <span class="chip chip-input">find_entity()</span>
+        <span class="chip chip-input">Regex Patterns</span>
+        <span class="chip chip-input">Context Extraction</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="conn"><div class="conn-merge"></div></div>
+
+  <div class="sl">⑤ Output</div>
+  <div class="row-2 a5">
+    <div class="card c-output">
+      <span class="card-icon">🎨</span>
+      <div class="card-label col-output">Colour-Coded Excel</div>
+      <div class="card-title">Results Written to Master File</div>
+      <div class="card-desc">Results are merged back into the master Excel file. Each row is colour-coded in the MAPPER_COMMENTS column for instant visual interpretation.</div>
+      <div class="chips">
+        <span class="chip" style="background:rgba(5,150,105,0.1);border:1px solid rgba(5,150,105,0.25);color:#059669">🟢 Green — SaaS Match</span>
+        <span class="chip" style="background:rgba(217,119,6,0.1);border:1px solid rgba(217,119,6,0.25);color:#d97706">🟠 Orange — Ignore Word</span>
+        <span class="chip" style="background:rgba(202,138,4,0.1);border:1px solid rgba(202,138,4,0.25);color:#ca8a04">🟡 Yellow — Entity Found</span>
+        <span class="chip" style="background:rgba(8,145,178,0.1);border:1px solid rgba(8,145,178,0.25);color:#0891b2">🔵 Cyan — Spend Keyword</span>
+      </div>
+    </div>
+    <div class="card c-classify">
+      <span class="card-icon">🔔</span>
+      <div class="card-label col-classify">Completion</div>
+      <div class="card-title">Notification &amp; Audio Alert</div>
+      <div class="card-desc">Once processing finishes, a desktop notification is triggered via pyautogui and an optional text-to-speech audio cue announces completion — no manual monitoring needed.</div>
+      <div class="chips">
+        <span class="chip chip-classify">pyautogui.alert()</span>
+        <span class="chip chip-classify">speak_finish flag</span>
+        <span class="chip chip-classify">subprocess TTS</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="ldot" style="background:var(--map)"></div>SaaS Match (SPV/MPV)</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--classify)"></div>Ignore / Flagged</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--output)"></div>New Entity Discovered</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--clean)"></div>Spend Keyword</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--input)"></div>Unclassified / Review</div>
+  </div>
+
+</div>
+</body>
+</html>
