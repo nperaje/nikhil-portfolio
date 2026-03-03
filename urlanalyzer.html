@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>URLAnalyzer</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f4ff;--border:rgba(99,120,210,0.18);--text:#1a1d2e;--muted:#6b7280;--accent:#4361ee;
+  --shadow:0 6px 28px rgba(67,97,238,0.11);
+  --inp:#0ea5e9;--prep:#7c3aed;--fetch:#ea580c;--good:#059669;--bad:#e11d48;--serp:#d97706;--out:#0891b2;
+}
+body{background:var(--bg);background-image:radial-gradient(ellipse 70% 50% at 5% 0%,rgba(124,58,237,0.10) 0%,transparent 55%),radial-gradient(ellipse 55% 45% at 95% 100%,rgba(67,97,238,0.10) 0%,transparent 55%);background-attachment:fixed;color:var(--text);font-family:'Segoe UI','SF Pro Display','Helvetica Neue',Arial,sans-serif;min-height:100vh;padding:44px 20px 70px;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(99,120,210,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(99,120,210,0.04) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0}
+.wrapper{position:relative;z-index:1;max-width:960px;margin:0 auto}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 5%;background:rgba(240,244,255,0.82);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);box-shadow:0 2px 12px rgba(67,97,238,0.07)}
+nav a{text-decoration:none;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);transition:color 0.2s}
+nav a:hover{color:var(--accent)}
+.nav-id{font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)}
+
+.header{text-align:center;margin-bottom:52px;animation:fadeDown 0.7s ease both}
+.eyebrow{font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+h1{font-size:clamp(28px,5vw,48px);font-weight:800;line-height:1.1;background:linear-gradient(135deg,#1a1d2e 30%,var(--fetch) 65%,var(--serp) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{font-family:'Courier New',monospace;font-size:12px;color:var(--muted);margin-top:10px;letter-spacing:0.05em}
+.desc{font-family:'Courier New',monospace;font-size:12px;color:#374151;max-width:620px;margin:18px auto 0;line-height:1.8;letter-spacing:0.02em}
+
+.trigger-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:30px;animation:fadeDown 0.7s 0.1s ease both}
+.pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.75);border:1px solid var(--border);border-radius:100px;padding:9px 20px;font-size:12px;font-weight:600;letter-spacing:0.04em;backdrop-filter:blur(12px);box-shadow:var(--shadow);color:var(--text)}
+.dot{width:7px;height:7px;border-radius:50%;animation:pulse 2s infinite}
+.d-blue{background:var(--inp);box-shadow:0 0 8px var(--inp)}
+.d-orange{background:var(--fetch);box-shadow:0 0 8px var(--fetch)}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+
+.conn{display:flex;justify-content:center;height:24px;margin:-3px 0;opacity:0.3}
+.conn-line{width:2px;background:linear-gradient(to bottom,rgba(67,97,238,0.6),rgba(67,97,238,0.1));border-radius:2px}
+.conn-split3{width:74%;height:24px;position:relative}
+.conn-split3::before,.conn-split3::after{content:'';position:absolute;top:0;width:2px;height:100%;background:linear-gradient(to bottom,rgba(67,97,238,0.45),rgba(67,97,238,0.06));border-radius:2px}
+.conn-split3::before{left:15%}.conn-split3::after{right:15%}
+.conn-split3 .mid{position:absolute;top:0;left:50%;transform:translateX(-50%);width:2px;height:100%;background:linear-gradient(to bottom,rgba(67,97,238,0.45),rgba(67,97,238,0.06));border-radius:2px}
+.conn-split2{width:56%;height:24px;position:relative}
+.conn-split2::before,.conn-split2::after{content:'';position:absolute;top:0;width:2px;height:100%;background:linear-gradient(to bottom,rgba(67,97,238,0.45),rgba(67,97,238,0.06));border-radius:2px}
+.conn-split2::before{left:22%}.conn-split2::after{right:22%}
+.conn-merge3{width:74%;height:24px;position:relative}
+.conn-merge3::before,.conn-merge3::after{content:'';position:absolute;bottom:0;width:2px;height:100%;background:linear-gradient(to top,rgba(67,97,238,0.45),rgba(67,97,238,0.06));border-radius:2px}
+.conn-merge3::before{left:15%}.conn-merge3::after{right:15%}
+.conn-merge3 .mid{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:2px;height:100%;background:linear-gradient(to top,rgba(67,97,238,0.45),rgba(67,97,238,0.06));border-radius:2px}
+
+.sl{font-family:'Courier New',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:var(--muted);display:flex;align-items:center;gap:12px;margin:26px 0 14px}
+.sl::before,.sl::after{content:'';flex:1;height:1px;background:rgba(67,97,238,0.15)}
+
+.card{border-radius:16px;padding:22px 24px;border:1px solid var(--border);position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;backdrop-filter:blur(14px)}
+.card:hover{transform:translateY(-3px)}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;opacity:0;transition:opacity 0.3s;pointer-events:none}
+.card:hover::before{opacity:1}
+.card-icon{font-size:22px;margin-bottom:10px;display:block}
+.card-label{font-family:'Courier New',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.16em;margin-bottom:6px}
+.card-title{font-size:16px;font-weight:700;margin-bottom:8px;line-height:1.2;color:var(--text)}
+.card-desc{font-family:'Courier New',monospace;font-size:11px;color:var(--muted);line-height:1.65}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.chip{font-family:'Courier New',monospace;font-size:10px;padding:4px 11px;border-radius:6px;letter-spacing:0.04em}
+.tag{display:inline-flex;font-family:'Courier New',monospace;font-size:10px;padding:3px 10px;border-radius:100px;margin-top:10px;border:1px solid currentColor;opacity:0.7}
+
+.c-inp{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(240,249,255,0.92));border-color:rgba(14,165,233,0.2);box-shadow:0 4px 20px rgba(14,165,233,0.08)}
+.c-inp::before{background:radial-gradient(ellipse at top left,rgba(14,165,233,0.09),transparent 70%)}
+.c-inp:hover{box-shadow:0 10px 32px rgba(14,165,233,0.16)}
+.col-inp{color:var(--inp)}.chip-inp{background:rgba(14,165,233,0.07);border:1px solid rgba(14,165,233,0.18);color:var(--inp)}
+
+.c-prep{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(245,243,255,0.92));border-color:rgba(124,58,237,0.2);box-shadow:0 4px 20px rgba(124,58,237,0.08)}
+.c-prep::before{background:radial-gradient(ellipse at top,rgba(124,58,237,0.09),transparent 70%)}
+.c-prep:hover{box-shadow:0 10px 32px rgba(124,58,237,0.16)}
+.col-prep{color:var(--prep)}.chip-prep{background:rgba(124,58,237,0.07);border:1px solid rgba(124,58,237,0.18);color:var(--prep)}
+
+.c-fetch{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(255,247,237,0.92));border-color:rgba(234,88,12,0.2);box-shadow:0 4px 20px rgba(234,88,12,0.08)}
+.c-fetch::before{background:radial-gradient(ellipse at center,rgba(234,88,12,0.09),transparent 70%)}
+.c-fetch:hover{box-shadow:0 10px 32px rgba(234,88,12,0.18)}
+.col-fetch{color:var(--fetch)}.chip-fetch{background:rgba(234,88,12,0.07);border:1px solid rgba(234,88,12,0.18);color:var(--fetch)}
+
+.c-good{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(236,253,245,0.92));border-color:rgba(5,150,105,0.2);box-shadow:0 4px 20px rgba(5,150,105,0.08)}
+.c-good::before{background:radial-gradient(ellipse at bottom left,rgba(5,150,105,0.09),transparent 70%)}
+.c-good:hover{box-shadow:0 10px 32px rgba(5,150,105,0.16)}
+.col-good{color:var(--good)}.chip-good{background:rgba(5,150,105,0.07);border:1px solid rgba(5,150,105,0.18);color:var(--good)}
+
+.c-bad{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(255,241,242,0.92));border-color:rgba(225,29,72,0.2);box-shadow:0 4px 20px rgba(225,29,72,0.08)}
+.c-bad::before{background:radial-gradient(ellipse at bottom,rgba(225,29,72,0.09),transparent 70%)}
+.c-bad:hover{box-shadow:0 10px 32px rgba(225,29,72,0.16)}
+.col-bad{color:var(--bad)}.chip-bad{background:rgba(225,29,72,0.07);border:1px solid rgba(225,29,72,0.18);color:var(--bad)}
+
+.c-err{background:linear-gradient(135deg,rgba(255,255,255,0.85),rgba(248,248,250,0.92));border-color:rgba(107,114,128,0.2);box-shadow:0 4px 16px rgba(107,114,128,0.08)}
+.c-err:hover{box-shadow:0 8px 24px rgba(107,114,128,0.14)}
+.col-err{color:var(--muted)}.chip-err{background:rgba(107,114,128,0.07);border:1px solid rgba(107,114,128,0.18);color:var(--muted)}
+
+.c-serp{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(255,251,235,0.92));border-color:rgba(217,119,6,0.2);box-shadow:0 4px 20px rgba(217,119,6,0.08)}
+.c-serp::before{background:radial-gradient(ellipse at top right,rgba(217,119,6,0.09),transparent 70%)}
+.c-serp:hover{box-shadow:0 10px 32px rgba(217,119,6,0.18)}
+.col-serp{color:var(--serp)}.chip-serp{background:rgba(217,119,6,0.07);border:1px solid rgba(217,119,6,0.18);color:var(--serp)}
+
+.c-out{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(236,254,255,0.92));border-color:rgba(8,145,178,0.2);box-shadow:0 4px 20px rgba(8,145,178,0.08)}
+.c-out:hover{box-shadow:0 10px 32px rgba(8,145,178,0.18)}
+.col-out{color:var(--out)}.chip-out{background:rgba(8,145,178,0.07);border:1px solid rgba(8,145,178,0.18);color:var(--out)}
+
+.status-row{display:grid;grid-template-columns:1fr;gap:6px;margin-top:12px}
+.sb{font-family:'Courier New',monospace;font-size:10px;padding:7px 10px;border-radius:8px;line-height:1.6}
+.sb-good{background:rgba(5,150,105,0.07);border:1px solid rgba(5,150,105,0.18);color:var(--good)}
+.sb-warn{background:rgba(217,119,6,0.07);border:1px solid rgba(217,119,6,0.18);color:var(--serp)}
+.sb-bad{background:rgba(225,29,72,0.07);border:1px solid rgba(225,29,72,0.18);color:var(--bad)}
+
+.out-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.out-field{font-family:'Courier New',monospace;font-size:10px;padding:6px 11px;border-radius:8px;background:rgba(8,145,178,0.06);border:1px solid rgba(8,145,178,0.15);color:var(--out)}
+.out-field span{color:var(--muted);margin-right:4px}
+
+.row-1{margin-bottom:16px}.row-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+
+.legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:44px;animation:fadeUp .6s .7s ease both}
+.legend-item{display:flex;align-items:center;gap:7px;font-family:'Courier New',monospace;font-size:10px;color:var(--muted)}
+.ldot{width:8px;height:8px;border-radius:2px}
+
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.a1{animation:fadeUp .65s .12s ease both}.a2{animation:fadeUp .65s .20s ease both}
+.a3{animation:fadeUp .65s .28s ease both}.a4{animation:fadeUp .65s .36s ease both}
+.a5{animation:fadeUp .65s .44s ease both}.a6{animation:fadeUp .65s .52s ease both}
+
+@media(max-width:640px){.row-2,.row-3{grid-template-columns:1fr}.out-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html">← Back to Portfolio</a>
+  <span class="nav-id">Nikhil KG · URLAnalyzer</span>
+</nav>
+<div style="height:54px"></div>
+<div class="wrapper">
+
+  <div class="header">
+    <div class="eyebrow">Python · Requests · BeautifulSoup · SerpAPI</div>
+    <h1>URLAnalyzer</h1>
+    <div class="sub">website_url → HTTP Check → Status Classification → Excel Output</div>
+    <p class="desc">A Python automation that takes a list of SaaS product website URLs from an Excel sheet and checks whether each one is still active, redirected, or broken. It detects domain changes, identifies potential company acquisitions or rebrands by scanning page titles and Google search results, and writes colour-coded status results back inline — row by row — into the same Excel file.</p>
+  </div>
+
+  <div class="trigger-row">
+    <div class="pill"><span class="dot d-blue"></span>🐍 &nbsp;Python Script — Manual Run</div>
+    <div class="pill"><span class="dot d-orange"></span>📋 &nbsp;Row-by-row with tqdm progress bar</div>
+  </div>
+
+  <div class="conn"><div class="conn-line"></div></div>
+
+  <div class="sl">① Input</div>
+  <div class="row-2 a1">
+    <div class="card c-inp">
+      <span class="card-icon">📂</span>
+      <div class="card-label col-inp">Source File</div>
+      <div class="card-title">Excel Workbook — website_url Column</div>
+      <div class="card-desc">Loads the input .xlsx file using openpyxl. Dynamically locates the <em>website_url</em> column by header name and inserts 6 new result columns directly next to it.</div>
+      <div class="chips">
+        <span class="chip chip-inp">openpyxl</span>
+        <span class="chip chip-inp">Dynamic column detect</span>
+        <span class="chip chip-inp">insert_cols()</span>
+      </div>
+    </div>
+    <div class="card c-prep">
+      <span class="card-icon">🏗️</span>
+      <div class="card-label col-prep">Column Setup</div>
+      <div class="card-title">6 Output Columns Injected</div>
+      <div class="card-desc">Before processing begins, six result columns are inserted right after <em>website_url</em> so results are written inline as each row is processed.</div>
+      <div class="chips">
+        <span class="chip chip-prep">url_status</span>
+        <span class="chip chip-prep">redirected_url_domain</span>
+        <span class="chip chip-prep">redirected_url_page_title</span>
+        <span class="chip chip-prep">acquisition_text</span>
+        <span class="chip chip-prep">acquisition_flag</span>
+        <span class="chip chip-prep">status</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="conn"><div class="conn-line"></div></div>
+
+  <div class="sl">② URL Preparation</div>
+  <div class="row-1 a2">
+    <div class="card c-prep">
+      <span class="card-icon">🔧</span>
+      <div class="card-label col-prep">Normalisation</div>
+      <div class="card-title">URL Cleaning &amp; Schema Injection</div>
+      <div class="card-desc">Each raw URL is normalised before any HTTP request is made — ensuring bare domains without a protocol are handled gracefully.</div>
+      <div class="chips">
+        <span class="chip chip-prep">Prepend http:// if missing</span>
+        <span class="chip chip-prep">Strip trailing slashes</span>
+        <span class="chip chip-prep">Strip www. prefix</span>
+        <span class="chip chip-prep">tldextract — domain + suffix</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="conn"><div class="conn-line"></div></div>
+
+  <div class="sl">③ HTTP Request &amp; Page Parsing</div>
+  <div class="row-2 a3">
+    <div class="card c-fetch">
+      <span class="card-icon">🌐</span>
+      <div class="card-label col-fetch">HTTP Fetch</div>
+      <div class="card-title">requests.get() with Chrome User-Agent</div>
+      <div class="card-desc">Fires a GET request with a real browser User-Agent header and 10s timeout. Captures final response URL, status code, and full redirect history chain.</div>
+      <div class="chips">
+        <span class="chip chip-fetch">Chrome User-Agent header</span>
+        <span class="chip chip-fetch">10s timeout</span>
+        <span class="chip chip-fetch">response.history</span>
+        <span class="chip chip-fetch">response.url (final)</span>
+      </div>
+    </div>
+    <div class="card c-fetch">
+      <span class="card-icon">🍜</span>
+      <div class="card-label col-fetch">Page Parsing</div>
+      <div class="card-title">BeautifulSoup — Title Extraction</div>
+      <div class="card-desc">HTML response body is parsed with BeautifulSoup to extract the &lt;title&gt; tag. Page title is used both as metadata and as an acquisition signal in downstream classification.</div>
+      <div class="chips">
+        <span class="chip chip-fetch">bs4.BeautifulSoup</span>
+        <span class="chip chip-fetch">soup.find_all('title')</span>
+        <span class="chip chip-fetch">page_title extraction</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="conn"><div class="conn-split3"><div class="mid"></div></div></div>
+
+  <div class="sl">④ HTTP Status Classification</div>
+  <div class="row-3 a4">
+    <div class="card c-good">
+      <span class="card-icon">✅</span>
+      <div class="card-label col-good">2xx — Success</div>
+      <div class="card-title">URL Active &amp; Reachable</div>
+      <div class="card-desc">Domain and TLD match the original. Page title is present. Marked as a healthy, working URL.</div>
+      <div class="status-row">
+        <div class="sb sb-good">✅ GOOD — Active</div>
+        <div class="sb sb-warn">⚠️ GOOD — Check TLD</div>
+      </div>
+    </div>
+    <div class="card c-bad">
+      <span class="card-icon">🔀</span>
+      <div class="card-label col-bad">2xx / 3xx — Redirect</div>
+      <div class="card-title">Domain Mismatch / Redirection</div>
+      <div class="card-desc">Final URL domain differs from original. Page title is scanned for acquisition keywords to determine if the company was acquired or rebranded.</div>
+      <div class="chips">
+        <span class="chip chip-bad">join · acqui · fka</span>
+        <span class="chip chip-bad">formerly · is now · dba</span>
+      </div>
+      <div class="status-row" style="margin-top:10px">
+        <div class="sb sb-bad">🔴 BAD — Check Domain</div>
+        <div class="sb sb-bad">🔴 BAD — Possible Acquisition</div>
+      </div>
+    </div>
+    <div class="card c-err">
+      <span class="card-icon">💥</span>
+      <div class="card-label col-err">4xx / 5xx / Exception</div>
+      <div class="card-title">Unreachable / Error</div>
+      <div class="card-desc">URL is broken, server error, or network exception caught. All failure modes are handled individually and written as descriptive messages.</div>
+      <div class="chips">
+        <span class="chip chip-err">ConnectTimeout</span>
+        <span class="chip chip-err">ReadTimeout</span>
+        <span class="chip chip-err">TooManyRedirects</span>
+        <span class="chip chip-err">ConnectionError</span>
+        <span class="chip chip-err">MissingSchema</span>
+      </div>
+      <div class="status-row" style="margin-top:10px">
+        <div class="sb sb-bad">🔴 BAD — Not Working</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="conn"><div class="conn-merge3"><div class="mid"></div></div></div>
+
+  <div class="sl">⑤ Acquisition Intelligence (SerpAPI)</div>
+  <div class="row-1 a5">
+    <div class="card c-serp">
+      <span class="card-icon">🔍</span>
+      <div class="card-label col-serp">Optional Enrichment — Google Search</div>
+      <div class="card-title">SerpAPI — Acquisition &amp; Rebrand Detection</div>
+      <div class="card-desc">When a domain mismatch is detected and the page title alone isn't conclusive, a targeted Google search is fired via SerpAPI. Organic results are scanned for acquisition keywords to confirm or rule out a company acquisition or rebrand. Capped at 100 API calls per run.</div>
+      <div class="chips">
+        <span class="chip chip-serp">Query: "domain acquired by redirected_domain"</span>
+        <span class="chip chip-serp">acqui · buys · purchase</span>
+        <span class="chip chip-serp">is now · formerly · fka</span>
+        <span class="chip chip-serp">known as · join</span>
+        <span class="chip chip-serp">≤ 100 API calls cap</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="conn"><div class="conn-line"></div></div>
+
+  <div class="sl">⑥ Output</div>
+  <div class="row-1 a6">
+    <div class="card c-out">
+      <span class="card-icon">💾</span>
+      <div class="card-label col-out">Results Written Back to Excel</div>
+      <div class="card-title">Inline Row-by-Row Save to .xlsx</div>
+      <div class="card-desc">Results are written back to the same Excel file after every row — meaning progress is never lost if the script is interrupted. Final save also runs after the loop completes.</div>
+      <div class="out-grid">
+        <div class="out-field"><span>01</span>url_status</div>
+        <div class="out-field"><span>02</span>redirected_url_domain</div>
+        <div class="out-field"><span>03</span>redirected_url_page_title</div>
+        <div class="out-field"><span>04</span>acquisition_text</div>
+        <div class="out-field"><span>05</span>acquisition_flag</div>
+        <div class="out-field"><span>06</span>status (GOOD / BAD)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="ldot" style="background:var(--inp)"></div>Input / Setup</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--prep)"></div>URL Prep</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--fetch)"></div>HTTP Fetch</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--good)"></div>Active / Good</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--bad)"></div>Redirect / Error</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--serp)"></div>Acquisition Intel</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--out)"></div>Excel Output</div>
+  </div>
+
+</div>
+</body>
+</html>
