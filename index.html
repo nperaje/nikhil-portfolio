@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nikhil KG — Data Professional</title>
+<!-- Open Graph / Social sharing -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Nikhil KG — Data Operations Specialist & Analytics Engineer">
+<meta property="og:description" content="7 years of experience building ETL automations, AI-powered tools, and real-time dashboards. Python · SQL · BigQuery · Looker Studio · Google Apps Script.">
+<meta property="og:url" content="https://www.kgnikhil.com">
+<meta property="og:image" content="https://www.kgnikhil.com/og-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Nikhil KG — Data Operations Specialist & Analytics Engineer">
+<meta name="twitter:description" content="7 years of experience building ETL automations, AI-powered tools, and real-time dashboards.">
+<meta name="twitter:image" content="https://www.kgnikhil.com/og-preview.png">
+<meta name="description" content="Portfolio of Nikhil KG — Data Operations Specialist with 7 years of experience in ETL automation, analytics engineering, Python, SQL and AI-powered tools.">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -359,7 +370,112 @@ footer{text-align:center;padding:28px 6%;border-top:1px solid var(--border);font
 
 
 
-/* ANIMATIONS */
+/* NAV ACTIVE STATE */
+.nav-links a.active{
+  color:var(--accent);
+  position:relative;
+}
+.nav-links a.active::after{
+  content:'';
+  position:absolute;
+  bottom:-4px;left:0;right:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:2px;
+}
+
+/* BACK TO TOP */
+#back-to-top{
+  position:fixed;
+  bottom:32px;right:32px;
+  z-index:200;
+  width:44px;height:44px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+  box-shadow:0 4px 20px rgba(67,97,238,0.35);
+  opacity:0;transform:translateY(16px);
+  transition:opacity 0.3s,transform 0.3s,box-shadow 0.2s;
+  pointer-events:none;
+}
+#back-to-top.visible{opacity:1;transform:translateY(0);pointer-events:all;}
+#back-to-top:hover{box-shadow:0 8px 28px rgba(67,97,238,0.5);transform:translateY(-2px);}
+
+/* SMOOTH SECTION TRANSITIONS — fade-edge top & bottom */
+section::before,section::after{
+  content:'';
+  display:block;
+  position:absolute;
+  left:0;right:0;
+  height:72px;
+  pointer-events:none;
+  z-index:2;
+}
+section::before{
+  top:0;
+  background:linear-gradient(to bottom,var(--bg),transparent);
+}
+section::after{
+  bottom:0;
+  background:linear-gradient(to top,var(--bg),transparent);
+}
+
+/* TIMELINE TOOLTIP */
+.tl-tooltip{
+  position:absolute;
+  bottom:calc(100% + 18px);
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(26,29,46,0.95);
+  color:#fff;
+  border-radius:10px;
+  padding:10px 14px;
+  font-family:'Courier New',monospace;
+  font-size:11px;
+  white-space:nowrap;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 0.18s,transform 0.18s;
+  transform:translateX(-50%) translateY(6px);
+  z-index:100;
+  box-shadow:0 4px 16px rgba(0,0,0,0.2);
+  line-height:1.6;
+}
+.tl-tooltip::after{
+  content:'';
+  position:absolute;
+  top:100%;left:50%;
+  transform:translateX(-50%);
+  border:6px solid transparent;
+  border-top-color:rgba(26,29,46,0.95);
+}
+.h-timeline-node:hover .tl-tooltip{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+/* For first node tooltip, anchor left to avoid bleed */
+.h-timeline-node.tl-first .tl-tooltip{
+  left:0;transform:translateY(6px) translateX(0);
+}
+.h-timeline-node.tl-first:hover .tl-tooltip{
+  transform:translateY(0) translateX(0);
+}
+.h-timeline-node.tl-first .tl-tooltip::after{left:12px;transform:none;}
+/* For last node tooltip, anchor right */
+.h-timeline-node.tl-last .tl-tooltip{
+  left:auto;right:0;transform:translateY(6px) translateX(0);
+}
+.h-timeline-node.tl-last:hover .tl-tooltip{
+  transform:translateY(0) translateX(0);
+}
+.h-timeline-node.tl-last .tl-tooltip::after{left:auto;right:12px;transform:none;}
+
+.tl-tooltip-company{font-weight:700;font-size:12px;margin-bottom:2px;}
+.tl-tooltip-role{color:rgba(255,255,255,0.7);font-size:10px;}
+.tl-tooltip-period{color:rgba(255,255,255,0.5);font-size:10px;margin-top:1px;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .reveal{opacity:0;transform:translateY(22px);transition:opacity 0.6s ease,transform 0.6s ease}
 .reveal.visible{opacity:1;transform:translateY(0)}
@@ -385,6 +501,8 @@ footer{text-align:center;padding:28px 6%;border-top:1px solid var(--border);font
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
+
+<button id="back-to-top" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <!-- HERO -->
 <section id="about">
@@ -622,19 +740,44 @@ footer{text-align:center;padding:28px 6%;border-top:1px solid var(--border);font
 <footer>© 2025 Nikhil KG · Built with purpose · Bengaluru, Karnataka</footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// Reveal on scroll
+// ── Reveal on scroll ──────────────────────────────────────────────
 const obs = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
 }, { threshold: 0.12 });
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-// Horizontal Career Timeline
+// ── Active nav highlight ──────────────────────────────────────────
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+const backToTop = document.getElementById('back-to-top');
+
+function onScroll() {
+  // Back to top visibility
+  if (window.scrollY > 400) backToTop.classList.add('visible');
+  else backToTop.classList.remove('visible');
+
+  // Active nav: find which section occupies the top 40% of viewport
+  let current = '';
+  sections.forEach(sec => {
+    const rect = sec.getBoundingClientRect();
+    if (rect.top <= window.innerHeight * 0.4 && rect.bottom > window.innerHeight * 0.1) {
+      current = sec.id;
+    }
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+
+// ── Horizontal Career Timeline ────────────────────────────────────
 (function() {
   const jobs = [
-    { year: 2019, month: 3,  label: 'HPE',               color: '#e11d48', side: 'below' },
-    { year: 2020, month: 11, label: 'Preqin',             color: '#0ea5e9', side: 'above' },
-    { year: 2021, month: 10, label: 'G2.com',             color: '#7c3aed', side: 'below' },
-    { year: 2024, month: 3,  label: 'BetterCloud',        color: '#4361ee', side: 'above' },
+    { year: 2019, month: 3,  label: 'HPE',         role: 'Sales Operations Associate',    period: 'Mar 2019 – Nov 2020', color: '#e11d48' },
+    { year: 2020, month: 11, label: 'Preqin',       role: 'Data Operations Associate',     period: 'Nov 2020 – Oct 2021', color: '#0ea5e9' },
+    { year: 2021, month: 10, label: 'G2.com',       role: 'Sr. Data Operations Associate', period: 'Oct 2021 – Mar 2024', color: '#7c3aed' },
+    { year: 2024, month: 3,  label: 'BetterCloud',  role: 'Data Operations Specialist',    period: 'Mar 2024 – Present',  color: '#4361ee' },
   ];
   const startYear = 2019, startMonth = 3;
   const now = new Date();
@@ -653,40 +796,32 @@ document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
     track.appendChild(sp);
   });
 
-  // Company nodes: company name on top (above), year on bottom (below)
   jobs.forEach((job, idx) => {
     const jobMonths = (job.year - startYear) * 12 + (job.month - startMonth);
     const pct = (jobMonths / totalMonths) * 100;
+    const isFirst = idx === 0;
+    const isLast  = idx === jobs.length - 1;
 
     const node = document.createElement('div');
-    node.className = 'h-timeline-node';
+    node.className = 'h-timeline-node' + (isFirst ? ' tl-first' : '') + (isLast ? ' tl-last' : '');
     node.style.left = pct + '%';
+    if (isFirst) node.style.transform = 'translate(0, -50%)';
+    else if (isLast) node.style.transform = 'translate(-100%, -50%)';
 
-    // For first node: anchor left; for last node: anchor right; others: centered
-    if (idx === 0) {
-      node.style.transform = 'translate(0, -50%)';
-    } else if (idx === jobs.length - 1) {
-      node.style.transform = 'translate(-100%, -50%)';
-    }
-
+    // Dot
     const dot = document.createElement('div');
     dot.className = 'h-timeline-dot';
     dot.style.background = job.color;
     dot.style.boxShadow = '0 0 10px ' + job.color + '99';
     dot.title = 'Jump to ' + job.label;
 
-    // For edge nodes, align dot back to center of node
-    if (idx === 0) dot.style.marginLeft = '0';
-    if (idx === jobs.length - 1) dot.style.marginLeft = 'auto';
-
+    // Click to scroll
     dot.addEventListener('click', () => {
       const items = document.querySelectorAll('.exp-item');
       let target = null;
       items.forEach(item => {
         const co = item.querySelector('.exp-company');
-        if (co && co.textContent.trim().toLowerCase().includes(job.label.toLowerCase())) {
-          target = item;
-        }
+        if (co && co.textContent.trim().toLowerCase().includes(job.label.toLowerCase())) target = item;
       });
       if (target) {
         const offset = 260;
@@ -699,23 +834,34 @@ document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
       }
     });
 
+    // Tooltip
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tl-tooltip';
+    tooltip.innerHTML =
+      '<div class="tl-tooltip-company" style="color:' + job.color + '">' + job.label + '</div>' +
+      '<div class="tl-tooltip-role">' + job.role + '</div>' +
+      '<div class="tl-tooltip-period">' + job.period + '</div>';
+
+    // Top label — company name
     const topLbl = document.createElement('div');
     topLbl.className = 'h-timeline-label above';
     topLbl.innerHTML = '<span class="tl-lbl-company" style="color:' + job.color + '">' + job.label + '</span>';
 
+    // Bottom label — year
     const botLbl = document.createElement('div');
     botLbl.className = 'h-timeline-label below';
     botLbl.innerHTML = '<span class="tl-lbl-year">' + job.year + '</span>';
 
-    // Align labels for edge nodes
-    if (idx === 0) {
-      topLbl.style.left = '0'; topLbl.style.transform = 'none'; topLbl.style.bottom = 'calc(100% + 10px)';
-      botLbl.style.left = '0'; botLbl.style.transform = 'none'; botLbl.style.top = 'calc(100% + 10px)';
-    } else if (idx === jobs.length - 1) {
-      topLbl.style.right = '0'; topLbl.style.left = 'auto'; topLbl.style.transform = 'none'; topLbl.style.bottom = 'calc(100% + 10px)';
-      botLbl.style.right = '0'; botLbl.style.left = 'auto'; botLbl.style.transform = 'none'; botLbl.style.top = 'calc(100% + 10px)';
+    // Edge alignment for labels
+    if (isFirst) {
+      topLbl.style.cssText = 'left:0;transform:none;bottom:calc(100% + 10px)';
+      botLbl.style.cssText = 'left:0;transform:none;top:calc(100% + 10px)';
+    } else if (isLast) {
+      topLbl.style.cssText = 'right:0;left:auto;transform:none;bottom:calc(100% + 10px)';
+      botLbl.style.cssText = 'right:0;left:auto;transform:none;top:calc(100% + 10px)';
     }
 
+    node.appendChild(tooltip);
     node.appendChild(topLbl);
     node.appendChild(dot);
     node.appendChild(botLbl);
