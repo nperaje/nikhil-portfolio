@@ -98,7 +98,9 @@ nav{
   background:var(--accent-light);letter-spacing:0.06em;
   backdrop-filter:blur(8px);
 }
-.hero-cta{display:flex;gap:14px;margin-top:38px;flex-wrap:wrap;animation:fadeUp 0.7s 0.5s ease both}
+.hero-cta{display:flex;flex-direction:column;gap:12px;margin-top:38px;animation:fadeUp 0.7s 0.5s ease both}
+.hero-cta-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.hero-cta-secondary{opacity:0.85}
 .btn{
   display:inline-flex;align-items:center;gap:8px;
   padding:13px 28px;border-radius:12px;
@@ -260,6 +262,103 @@ section{position:relative;z-index:1}
 /* FOOTER */
 footer{text-align:center;padding:28px 6%;border-top:1px solid var(--border);font-family:'Courier New',monospace;font-size:11px;color:var(--muted);letter-spacing:0.06em}
 
+/* STICKY SECTION HEADER */
+.sticky-header {
+  position: sticky;
+  top: 68px;
+  z-index: 50;
+  background: rgba(240,244,255,0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 18px 0 14px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+.sticky-header .section-num { margin-bottom: 4px; }
+
+/* HORIZONTAL TIMELINE */
+.h-timeline-wrap {
+  position: sticky;
+  top: 140px;
+  z-index: 40;
+  background: rgba(240,244,255,0.90);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 0 52px;
+  overflow: visible;
+}
+.h-timeline-track {
+  position: relative;
+  height: 4px;
+  background: linear-gradient(to right, var(--accent), var(--accent2));
+  border-radius: 4px;
+  margin: 36px 0 0;
+}
+.h-timeline-track::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  right: -7px; background: var(--accent2); box-shadow: 0 0 10px rgba(124,58,237,0.5);
+}
+
+.h-timeline-node {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.h-timeline-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 0 8px rgba(67,97,238,0.4);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative; z-index: 2;
+}
+.h-timeline-dot:hover { transform: scale(1.55); box-shadow: 0 0 14px rgba(67,97,238,0.6); }
+.h-timeline-label {
+  position: absolute;
+  white-space: nowrap;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  text-align: center;
+  line-height: 1.4;
+}
+/* Company name on top, year on bottom */
+.h-timeline-label.above {
+  bottom: calc(100% + 10px);
+  display: flex; flex-direction: column; align-items: center;
+}
+.h-timeline-label.below {
+  top: calc(100% + 10px);
+  display: flex; flex-direction: column; align-items: center;
+}
+.tl-lbl-company { font-weight: 700; font-size: 11px; }
+.tl-lbl-year    { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+.tl-edge-label {
+  position: absolute;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  top: calc(50% + 16px);
+  color: var(--muted);
+}
+.tl-edge-label.start { left: 0; transform: translateX(0); }
+.tl-edge-label.end   { right: 0; transform: translateX(0); }
+
+
+
 /* ANIMATIONS */
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .reveal{opacity:0;transform:translateY(22px);transition:opacity 0.6s ease,transform 0.6s ease}
@@ -303,9 +402,15 @@ footer{text-align:center;padding:28px 6%;border-top:1px solid var(--border);font
       <span class="hero-tag">Google Apps Script</span>
     </div>
     <div class="hero-cta">
-      <a href="#projects" class="btn btn-primary">View Projects →</a>
-      <a href="#contact" class="btn btn-ghost">Get in Touch</a>
-      <a href="/Nikhil_KG_Resume.pdf" download class="btn btn-ghost">⬇ Download Resume</a>
+      <div class="hero-cta-row">
+        <a href="#projects" class="btn btn-primary">View Projects →</a>
+        <a href="#skills" class="btn btn-ghost">🛠 Skills</a>
+        <a href="#experience" class="btn btn-ghost">💼 Experience</a>
+      </div>
+      <div class="hero-cta-row hero-cta-secondary">
+        <a href="#contact" class="btn btn-ghost">✉️ Get in Touch</a>
+        <a href="/Nikhil_KG_Resume.pdf" download class="btn btn-ghost">⬇ Download Resume</a>
+      </div>
     </div>
   </div>
 </section>
@@ -315,7 +420,7 @@ footer{text-align:center;padding:28px 6%;border-top:1px solid var(--border);font
 <!-- SKILLS -->
 <section id="skills">
   <div class="section-wrap">
-    <div class="section-header reveal">
+    <div class="section-header sticky-header reveal">
       <span class="section-num">02 / Skills</span>
       <h2 class="section-title">What I <span>Work With</span></h2>
     </div>
@@ -335,10 +440,18 @@ footer{text-align:center;padding:28px 6%;border-top:1px solid var(--border);font
 <!-- EXPERIENCE -->
 <section id="experience">
   <div class="section-wrap">
-    <div class="section-header reveal">
+    <div class="section-header sticky-header reveal">
       <span class="section-num">03 / Experience</span>
       <h2 class="section-title">Where I've <span>Worked</span></h2>
     </div>
+
+    <!-- HORIZONTAL TIMELINE -->
+    <div class="h-timeline-wrap">
+      <div class="h-timeline-track" id="expTimeline">
+        <!-- Nodes injected by JS -->
+      </div>
+    </div>
+
     <div class="exp-list">
       <div class="exp-item reveal">
         <div class="exp-meta">
@@ -414,7 +527,7 @@ footer{text-align:center;padding:28px 6%;border-top:1px solid var(--border);font
 <!-- PROJECTS -->
 <section id="projects">
   <div class="section-wrap">
-    <div class="section-header reveal">
+    <div class="section-header sticky-header reveal">
       <span class="section-num">04 / Projects</span>
       <h2 class="section-title">Automation <span>Projects</span></h2>
       <p style="color:var(--muted);font-size:14px;margin-top:12px;font-family:'Courier New',monospace;">Click any project to explore the architecture of automation →</p>
@@ -469,7 +582,7 @@ footer{text-align:center;padding:28px 6%;border-top:1px solid var(--border);font
 <!-- EDUCATION -->
 <section id="education">
   <div class="section-wrap">
-    <div class="section-header reveal">
+    <div class="section-header sticky-header reveal">
       <span class="section-num">05 / Education &amp; Certifications</span>
       <h2 class="section-title">Learning &amp; <span>Growth</span></h2>
     </div>
@@ -499,7 +612,7 @@ footer{text-align:center;padding:28px 6%;border-top:1px solid var(--border);font
     <div class="contact-title">Let's Work Together</div>
     <p class="contact-sub">Open to new opportunities in data engineering, analytics, and automation. Feel free to reach out via email or LinkedIn.</p>
     <div class="contact-links">
-      <a href="mailto:nperaje@gmail.com" class="contact-link">✉️ &nbsp;nperaje@gmail.com</a>
+      <a href="/cdn-cgi/l/email-protection#4f213f2a3d2e252a0f28222e2623612c2022" class="contact-link">✉️ &nbsp;<span class="__cf_email__" data-cfemail="bcd2ccd9ceddd6d9fcdbd1ddd5d092dfd3d1">[email&#160;protected]</span></a>
       <a href="https://www.linkedin.com/in/kgnikhil" target="_blank" class="contact-link">🔗 &nbsp;linkedin.com/in/kgnikhil</a>
       <a href="tel:9845592709" class="contact-link">📱 &nbsp;+91 98455 92709</a>
     </div>
@@ -508,13 +621,107 @@ footer{text-align:center;padding:28px 6%;border-top:1px solid var(--border);font
 
 <footer>© 2025 Nikhil KG · Built with purpose · Bengaluru, Karnataka</footer>
 
-<script>
-const obs=new IntersectionObserver((entries)=>{
-  entries.forEach((e,i)=>{
-    if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*60);obs.unobserve(e.target)}
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// Reveal on scroll
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// Horizontal Career Timeline
+(function() {
+  const jobs = [
+    { year: 2019, month: 3,  label: 'HPE',               color: '#e11d48', side: 'below' },
+    { year: 2020, month: 11, label: 'Preqin',             color: '#0ea5e9', side: 'above' },
+    { year: 2021, month: 10, label: 'G2.com',             color: '#7c3aed', side: 'below' },
+    { year: 2024, month: 3,  label: 'BetterCloud',        color: '#4361ee', side: 'above' },
+  ];
+  const startYear = 2019, startMonth = 3;
+  const now = new Date();
+  const endYear = now.getFullYear();
+  const endMonth = now.getMonth() + 1;
+  const totalMonths = (endYear - startYear) * 12 + (endMonth - startMonth);
+
+  const track = document.getElementById('expTimeline');
+  if (!track) return;
+
+  // Edge year labels
+  ['start','end'].forEach(side => {
+    const sp = document.createElement('span');
+    sp.className = 'tl-edge-label ' + side;
+    sp.textContent = side === 'start' ? startYear : endYear;
+    track.appendChild(sp);
   });
-},{threshold:0.1});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+  // Company nodes: company name on top (above), year on bottom (below)
+  jobs.forEach((job, idx) => {
+    const jobMonths = (job.year - startYear) * 12 + (job.month - startMonth);
+    const pct = (jobMonths / totalMonths) * 100;
+
+    const node = document.createElement('div');
+    node.className = 'h-timeline-node';
+    node.style.left = pct + '%';
+
+    // For first node: anchor left; for last node: anchor right; others: centered
+    if (idx === 0) {
+      node.style.transform = 'translate(0, -50%)';
+    } else if (idx === jobs.length - 1) {
+      node.style.transform = 'translate(-100%, -50%)';
+    }
+
+    const dot = document.createElement('div');
+    dot.className = 'h-timeline-dot';
+    dot.style.background = job.color;
+    dot.style.boxShadow = '0 0 10px ' + job.color + '99';
+    dot.title = 'Jump to ' + job.label;
+
+    // For edge nodes, align dot back to center of node
+    if (idx === 0) dot.style.marginLeft = '0';
+    if (idx === jobs.length - 1) dot.style.marginLeft = 'auto';
+
+    dot.addEventListener('click', () => {
+      const items = document.querySelectorAll('.exp-item');
+      let target = null;
+      items.forEach(item => {
+        const co = item.querySelector('.exp-company');
+        if (co && co.textContent.trim().toLowerCase().includes(job.label.toLowerCase())) {
+          target = item;
+        }
+      });
+      if (target) {
+        const offset = 260;
+        const top = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+        target.style.transition = 'background 0.3s';
+        target.style.background = 'rgba(67,97,238,0.07)';
+        target.style.borderRadius = '12px';
+        setTimeout(() => { target.style.background = ''; target.style.borderRadius = ''; }, 1200);
+      }
+    });
+
+    const topLbl = document.createElement('div');
+    topLbl.className = 'h-timeline-label above';
+    topLbl.innerHTML = '<span class="tl-lbl-company" style="color:' + job.color + '">' + job.label + '</span>';
+
+    const botLbl = document.createElement('div');
+    botLbl.className = 'h-timeline-label below';
+    botLbl.innerHTML = '<span class="tl-lbl-year">' + job.year + '</span>';
+
+    // Align labels for edge nodes
+    if (idx === 0) {
+      topLbl.style.left = '0'; topLbl.style.transform = 'none'; topLbl.style.bottom = 'calc(100% + 10px)';
+      botLbl.style.left = '0'; botLbl.style.transform = 'none'; botLbl.style.top = 'calc(100% + 10px)';
+    } else if (idx === jobs.length - 1) {
+      topLbl.style.right = '0'; topLbl.style.left = 'auto'; topLbl.style.transform = 'none'; topLbl.style.bottom = 'calc(100% + 10px)';
+      botLbl.style.right = '0'; botLbl.style.left = 'auto'; botLbl.style.transform = 'none'; botLbl.style.top = 'calc(100% + 10px)';
+    }
+
+    node.appendChild(topLbl);
+    node.appendChild(dot);
+    node.appendChild(botLbl);
+    track.appendChild(node);
+  });
+})();
 </script>
 </body>
 </html>
