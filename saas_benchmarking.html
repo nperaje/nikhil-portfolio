@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaaS License Benchmarking Engine</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f4ff;--border:rgba(99,120,210,0.18);--surface:rgba(255,255,255,0.68);
+  --text:#1a1d2e;--muted:#6b7280;--accent:#4361ee;
+  --shadow:0 6px 28px rgba(67,97,238,0.11);--shadow-lg:0 12px 40px rgba(67,97,238,0.18);
+  --bq:#4f46e5;--cte:#0891b2;--transform:#059669;
+  --storage:#d97706;--bi:#ea580c;--alert:#db2777;
+}
+body{background:var(--bg);background-image:radial-gradient(ellipse 70% 50% at 5% 0%,rgba(124,58,237,0.10) 0%,transparent 55%),radial-gradient(ellipse 55% 45% at 95% 100%,rgba(67,97,238,0.10) 0%,transparent 55%);background-attachment:fixed;color:var(--text);font-family:'Segoe UI','SF Pro Display','Helvetica Neue',Arial,sans-serif;min-height:100vh;padding:44px 20px 70px;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(99,120,210,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(99,120,210,0.04) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0}
+.wrapper{position:relative;z-index:1;max-width:960px;margin:0 auto}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 5%;background:rgba(240,244,255,0.82);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);box-shadow:0 2px 12px rgba(67,97,238,0.07)}
+nav a{text-decoration:none;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);transition:color 0.2s}
+nav a:hover{color:var(--accent)}
+.nav-id{font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)}
+
+.header{text-align:center;margin-bottom:52px;animation:fadeDown 0.7s ease both}
+.eyebrow{font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+h1{font-size:clamp(28px,5vw,48px);font-weight:800;line-height:1.1;background:linear-gradient(135deg,#1a1d2e 30%,var(--accent) 70%,#7c3aed 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{font-family:'Courier New',monospace;font-size:12px;color:var(--muted);margin-top:10px;letter-spacing:0.05em}
+.desc{font-family:'Courier New',monospace;font-size:12px;color:#374151;max-width:620px;margin:18px auto 0;line-height:1.8;letter-spacing:0.02em}
+
+.trigger-row{display:flex;justify-content:center;margin-bottom:30px;animation:fadeDown 0.7s 0.1s ease both}
+.trigger-pill{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.75);border:1px solid var(--border);border-radius:100px;padding:10px 22px;font-size:13px;font-weight:600;letter-spacing:0.04em;backdrop-filter:blur(12px);box-shadow:var(--shadow);color:var(--text)}
+.dot{width:8px;height:8px;border-radius:50%;animation:pulse 2s infinite}
+.dot-indigo{background:#4f46e5;box-shadow:0 0 8px #4f46e5}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+
+/* Connectors */
+.conn{display:flex;justify-content:center;height:24px;margin:-3px 0;opacity:0.3}
+.conn-line{width:2px;background:linear-gradient(to bottom,rgba(67,97,238,0.6),rgba(67,97,238,0.1));border-radius:2px}
+.conn-split{width:58%;height:24px;position:relative}
+.conn-split::before,.conn-split::after{content:'';position:absolute;top:0;width:2px;height:100%;background:linear-gradient(to bottom,rgba(67,97,238,0.5),rgba(67,97,238,0.08));border-radius:2px}
+.conn-split::before{left:24%}.conn-split::after{right:24%}
+.conn-merge{width:58%;height:24px;position:relative}
+.conn-merge::before,.conn-merge::after{content:'';position:absolute;bottom:0;width:2px;height:100%;background:linear-gradient(to top,rgba(67,97,238,0.5),rgba(67,97,238,0.08));border-radius:2px}
+.conn-merge::before{left:24%}.conn-merge::after{right:24%}
+
+/* Section label */
+.sl{font-family:'Courier New',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:var(--muted);display:flex;align-items:center;gap:12px;margin:26px 0 14px}
+.sl::before,.sl::after{content:'';flex:1;height:1px;background:rgba(67,97,238,0.15)}
+
+/* Cards */
+.card{border-radius:16px;padding:22px 24px;border:1px solid var(--border);position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.card:hover{transform:translateY(-3px)}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;opacity:0;transition:opacity 0.3s;pointer-events:none}
+.card:hover::before{opacity:1}
+.card-icon{font-size:22px;margin-bottom:10px;display:block}
+.card-label{font-family:'Courier New',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.16em;margin-bottom:6px}
+.card-title{font-size:16px;font-weight:700;margin-bottom:8px;line-height:1.2;color:var(--text)}
+.card-desc{font-family:'Courier New',monospace;font-size:11px;color:var(--muted);line-height:1.65}
+.tag{display:inline-flex;align-items:center;font-family:'Courier New',monospace;font-size:10px;padding:3px 10px;border-radius:100px;margin-top:10px;border:1px solid currentColor;opacity:0.7}
+
+/* SQL techniques table card */
+.sql-table{width:100%;border-collapse:collapse;margin-top:14px}
+.sql-table th{font-family:'Courier New',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);text-align:left;padding:6px 10px;border-bottom:1px solid rgba(67,97,238,0.12)}
+.sql-table td{font-family:'Courier New',monospace;font-size:11px;color:#374151;padding:8px 10px;border-bottom:1px solid rgba(67,97,238,0.07);vertical-align:top;line-height:1.55}
+.sql-table tr:last-child td{border-bottom:none}
+.sql-table td:first-child{font-weight:700;color:var(--text);white-space:nowrap}
+.sql-table td:nth-child(2){color:#4f46e5;font-size:10px}
+.sql-table tr:hover td{background:rgba(67,97,238,0.025)}
+
+/* Stage colours */
+.c-bq{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(243,244,255,0.92));border-color:rgba(79,70,229,0.2);box-shadow:0 4px 20px rgba(79,70,229,0.08)}
+.c-bq::before{background:radial-gradient(ellipse at top left,rgba(79,70,229,0.09),transparent 70%)}
+.c-bq:hover{box-shadow:0 10px 32px rgba(79,70,229,0.16)}
+.col-bq{color:var(--bq)}
+
+.c-cte{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(236,253,255,0.92));border-color:rgba(8,145,178,0.2);box-shadow:0 4px 20px rgba(8,145,178,0.08)}
+.c-cte::before{background:radial-gradient(ellipse at top right,rgba(8,145,178,0.09),transparent 70%)}
+.c-cte:hover{box-shadow:0 10px 32px rgba(8,145,178,0.16)}
+.col-cte{color:var(--cte)}
+
+.c-transform{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(236,253,245,0.92));border-color:rgba(5,150,105,0.2);box-shadow:0 4px 20px rgba(5,150,105,0.08)}
+.c-transform::before{background:radial-gradient(ellipse at center,rgba(5,150,105,0.09),transparent 70%)}
+.c-transform:hover{box-shadow:0 10px 32px rgba(5,150,105,0.16)}
+.col-transform{color:var(--transform)}
+
+.c-storage{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(255,251,235,0.92));border-color:rgba(217,119,6,0.18);box-shadow:0 4px 20px rgba(217,119,6,0.07)}
+.c-storage:hover{box-shadow:0 10px 32px rgba(217,119,6,0.15)}
+.col-storage{color:var(--storage)}
+
+.c-bi{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(255,247,237,0.92));border-color:rgba(234,88,12,0.2);box-shadow:0 4px 20px rgba(234,88,12,0.08)}
+.c-bi::before{background:radial-gradient(ellipse at center,rgba(234,88,12,0.09),transparent 70%)}
+.c-bi:hover{box-shadow:0 10px 32px rgba(234,88,12,0.18)}
+.col-bi{color:var(--bi)}
+
+.c-alert{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(253,242,248,0.92));border-color:rgba(219,39,119,0.2);box-shadow:0 4px 20px rgba(219,39,119,0.07)}
+.c-alert:hover{box-shadow:0 10px 32px rgba(219,39,119,0.15)}
+.col-alert{color:var(--alert)}
+
+.c-outcome{background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(238,242,255,0.92));border-color:rgba(67,97,238,0.2);box-shadow:0 4px 20px rgba(67,97,238,0.08);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:32px 24px}
+
+/* Chips */
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.chip{font-family:'Courier New',monospace;font-size:10px;padding:4px 11px;border-radius:6px;letter-spacing:0.04em}
+.chip-bq{background:rgba(79,70,229,0.08);border:1px solid rgba(79,70,229,0.2);color:var(--bq)}
+.chip-cte{background:rgba(8,145,178,0.08);border:1px solid rgba(8,145,178,0.2);color:var(--cte)}
+.chip-transform{background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.2);color:var(--transform)}
+.chip-bi{background:rgba(234,88,12,0.08);border:1px solid rgba(234,88,12,0.2);color:var(--bi)}
+
+/* Layouts */
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.row-1{margin-bottom:16px}
+
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.a1{animation:fadeUp .65s .12s ease both}.a2{animation:fadeUp .65s .20s ease both}
+.a3{animation:fadeUp .65s .28s ease both}.a4{animation:fadeUp .65s .36s ease both}
+.a5{animation:fadeUp .65s .44s ease both}.a6{animation:fadeUp .65s .52s ease both}
+
+@media(max-width:680px){.row-2,.row-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html">← Back to Portfolio</a>
+  <span class="nav-id">Nikhil KG · SaaS License Benchmarking Engine</span>
+</nav>
+<div style="height:54px"></div>
+<div class="wrapper">
+
+  <div class="header">
+    <div class="eyebrow">Google BigQuery · Standard SQL · Analytics Engineering</div>
+    <h1>SaaS License<br>Benchmarking Engine</h1>
+    <div class="sub">BigQuery SQL → Transform → BI Dashboard</div>
+    <p class="desc">A multi-layered SQL analytical engine built on Google BigQuery that aggregates contract and pricing data across hundreds of customer workspaces, normalises costs to USD, and surfaces per-seat / per-unit monthly pricing across heterogeneous billing models — enabling procurement teams to make data-driven vendor negotiations.</p>
+  </div>
+
+  <div class="trigger-row">
+    <div class="trigger-pill"><span class="dot dot-indigo"></span>🗄️ &nbsp;BigQuery Standard SQL · 18-Table Join</div>
+  </div>
+
+  <div class="conn"><div class="conn-split"></div></div>
+
+  <div class="sl">① Source Data — Layer 1: Raw CTE</div>
+  <div class="row-3 a1">
+    <div class="card c-bq">
+      <span class="card-icon">📄</span>
+      <div class="card-label col-bq">Relational Tables</div>
+      <div class="card-title">Contracts & Workspaces</div>
+      <div class="card-desc">Joins contracts, workspaces, vendors, products, and billing plans. Status filter excludes sandbox, demo, and test accounts.</div>
+      <span class="tag col-bq">13 Tables</span>
+    </div>
+    <div class="card c-cte">
+      <span class="card-icon">💱</span>
+      <div class="card-label col-cte">Lookup Table</div>
+      <div class="card-title">Currency Rate Table</div>
+      <div class="card-desc">Provides live conversion rates for all contract currencies. Used to normalise every price to a common USD baseline.</div>
+      <span class="tag col-cte">FX Conversion</span>
+    </div>
+    <div class="card c-bq">
+      <span class="card-icon">🧩</span>
+      <div class="card-label col-bq">Semi-Structured</div>
+      <div class="card-title">JSON Pricing Blobs</div>
+      <div class="card-desc">pricing_models.details column stores semi-structured JSON. Fields like price_per_seat, fixed_price, and units_purchased are extracted at query time.</div>
+      <span class="tag col-bq">JSON_EXTRACT</span>
+    </div>
+  </div>
+
+  <div class="conn"><div class="conn-merge"></div></div>
+
+  <div class="sl">② Transform — SQL Techniques</div>
+  <div class="row-1 a2">
+    <div class="card c-transform">
+      <span class="card-icon">⚙️</span>
+      <div class="card-label col-transform">Advanced SQL Layer</div>
+      <div class="card-title">Transformation & Data Engineering</div>
+      <div class="card-desc">Multi-layered SQL logic handles JSON parsing, currency conversion, billing-cycle normalisation, data quality filtering, and NULL-safe arithmetic across all billing models.</div>
+      <table class="sql-table">
+        <thead>
+          <tr>
+            <th>Technique</th>
+            <th>Function / Pattern</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>JSON Parsing</td>
+            <td>JSON_EXTRACT_SCALAR, JSON_VALUE</td>
+            <td>Extracts pricing fields stored as semi-structured JSON in pricing_models.details</td>
+          </tr>
+          <tr>
+            <td>CTE Layer</td>
+            <td>WITH raw AS (...)</td>
+            <td>Separates raw extraction and joins from the presentation layer for readability and reuse</td>
+          </tr>
+          <tr>
+            <td>Multi-model CASE</td>
+            <td>CASE WHEN model_type = ...</td>
+            <td>Branches pricing logic across four billing models: per_seat, fixed, metered, one_time</td>
+          </tr>
+          <tr>
+            <td>Currency Normalisation</td>
+            <td>(price * quote_rate) / base_rate</td>
+            <td>Converts all contract currencies to USD for apples-to-apples benchmarking</td>
+          </tr>
+          <tr>
+            <td>Billing Cycle Normalisation</td>
+            <td>SAFE_DIVIDE, DATE_DIFF, REGEXP_EXTRACT</td>
+            <td>Converts monthly, quarterly, annual, and one-time frequencies into a unified monthly cost</td>
+          </tr>
+          <tr>
+            <td>String Manipulation</td>
+            <td>REGEXP_REPLACE, TO_JSON_STRING, SUBSTRING</td>
+            <td>Cleans JSON-encoded numeric strings and safely casts values for arithmetic</td>
+          </tr>
+          <tr>
+            <td>License Bucketing</td>
+            <td>SAFE_CAST + BETWEEN in CASE</td>
+            <td>Groups license counts into 14 ordered tiers (1–10, 11–20 … 1M+) for histogram benchmarking</td>
+          </tr>
+          <tr>
+            <td>Aggregate & Dedup</td>
+            <td>SUM, COUNT, STRING_AGG(DISTINCT ...)</td>
+            <td>Rolls up contract credits and file names per service period at pricing model grain</td>
+          </tr>
+          <tr>
+            <td>Data Quality Filter</td>
+            <td>REGEXP_CONTAINS, NOT LIKE ANY</td>
+            <td>Excludes sandbox, demo, test workspaces and personal email domains from benchmark</td>
+          </tr>
+          <tr>
+            <td>NULL Safety</td>
+            <td>COALESCE, SAFE_DIVIDE, SAFE_CAST</td>
+            <td>Handles NULL pricing values, unlimited-seat flags, and division-by-zero across all branches</td>
+          </tr>
+          <tr>
+            <td>Date Arithmetic</td>
+            <td>DATE_DIFF, EXTRACT(YEAR ...), DATE()</td>
+            <td>Computes contract length in days, term buckets in months, and service start year</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="conn"><div class="conn-split"></div></div>
+
+  <div class="sl">③ Query Architecture</div>
+  <div class="row-2 a3">
+    <div class="card c-cte">
+      <span class="card-icon">🔗</span>
+      <div class="card-label col-cte">Layer 1</div>
+      <div class="card-title">Raw CTE Layer</div>
+      <div class="card-desc">Joins 18 tables and performs all JSON extraction, currency conversion, billing-cycle parsing, and price derivation. Builds the clean analytical base.</div>
+      <div class="chips">
+        <span class="chip chip-cte">18-Table Join</span>
+        <span class="chip chip-cte">JSON Extraction</span>
+        <span class="chip chip-cte">FX Conversion</span>
+        <span class="chip chip-cte">Price Derivation</span>
+      </div>
+    </div>
+    <div class="card c-bq">
+      <span class="card-icon">📐</span>
+      <div class="card-label col-bq">Layer 2</div>
+      <div class="card-title">Presentation Layer</div>
+      <div class="card-desc">SELECT from raw CTE applies business-level transforms: license tier bucketing, term grouping, monthly cost normalisation, and service-term totals.</div>
+      <div class="chips">
+        <span class="chip chip-bq">Tier Bucketing</span>
+        <span class="chip chip-bq">Term Grouping</span>
+        <span class="chip chip-bq">Monthly Normalisation</span>
+        <span class="chip chip-bq">ORDER BY Workspace</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="conn"><div class="conn-merge"></div></div>
+
+  <div class="sl">④ Output</div>
+  <div class="row-1 a4">
+    <div class="card c-storage">
+      <span class="card-icon">📊</span>
+      <div class="card-label col-storage">Analytical Output</div>
+      <div class="card-title">Flat Analytical Table</div>
+      <div class="card-desc">A flat, benchmark-ready table ordered by workspace and product. Exposes per-seat / per-unit monthly pricing, license tier, billing model, contract term, and USD-normalised totals — consumed directly by BI dashboards and Excel reports.</div>
+      <div class="chips">
+        <span class="chip chip-bi">Per-Seat Pricing</span>
+        <span class="chip chip-bi">License Tiers</span>
+        <span class="chip chip-bi">Billing Model</span>
+        <span class="chip chip-bi">USD Normalised</span>
+        <span class="chip chip-bi">Contract Term</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="conn"><div class="conn-split"></div></div>
+
+  <div class="sl">⑤ Serve & Act</div>
+  <div class="row-2 a5">
+    <div class="card c-bi">
+      <span class="card-icon">📈</span>
+      <div class="card-label col-bi">BI Layer</div>
+      <div class="card-title">BI Dashboard & Excel Reports</div>
+      <div class="card-desc">Flat output consumed by BI dashboards and Excel. Visualises pricing distributions, licence tier histograms, and median benchmarks across vendors, geographies, and billing models.</div>
+      <div class="chips">
+        <span class="chip chip-bi">📉 Pricing Distribution</span>
+        <span class="chip chip-bi">📊 Tier Histograms</span>
+        <span class="chip chip-bi">🔢 Median Benchmarks</span>
+        <span class="chip chip-bi">🌍 Cross-Geo View</span>
+      </div>
+    </div>
+    <div class="card c-outcome">
+      <div style="font-size:36px;margin-bottom:12px">✅</div>
+      <div class="card-label" style="color:var(--accent)">Business Impact</div>
+      <div class="card-title">Data-Driven Vendor Negotiations</div>
+      <div class="card-desc" style="text-align:center">Procurement and finance teams benchmark per-seat pricing across all customer contracts side-by-side — gaining leverage in vendor negotiations with median and range data across 14 license tiers.</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
