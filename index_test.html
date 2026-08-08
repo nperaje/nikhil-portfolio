@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nikhil KG — Senior Data Analyst</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #EEF0EE;
+    --paper: #F6F7F5;
+    --ink: #1B1D1B;
+    --ink-soft: #565954;
+    --rule: #C6CAC4;
+    --rule-strong: #9CA098;
+    --ledger-red: #8A3324;
+    --ledger-red-soft: #B4573F;
+    --accent-bg: #E7DED9;
+  }
+  *{ box-sizing: border-box; margin: 0; padding: 0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--accent-bg); color: var(--ledger-red); }
+
+  .mono{ font-family: 'IBM Plex Mono', monospace; }
+  .serif{ font-family: 'Source Serif 4', serif; }
+
+  .wrap{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ---------- Header / ledger masthead ---------- */
+  header{
+    padding: 96px 0 40px;
+    border-bottom: 2.5px double var(--rule-strong);
+  }
+  .eyebrow{
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+  h1{
+    font-family: 'Source Serif 4', serif;
+    font-weight: 600;
+    font-size: clamp(38px, 7vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  .role{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+    color: var(--ledger-red);
+    margin-top: 10px;
+    letter-spacing: 0.01em;
+  }
+  .contact-line{
+    margin-top: 28px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 0;
+  }
+  .contact-line a{ color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  .contact-line a:hover{ color: var(--ledger-red); border-color: var(--ledger-red); }
+  .contact-line span.sep{ margin: 0 10px; color: var(--rule-strong); }
+
+  /* ---------- Section scaffolding ---------- */
+  section{ padding: 52px 0; border-bottom: 0.5px solid var(--rule); }
+  section:last-of-type{ border-bottom: none; }
+  .section-head{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .section-num{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--rule-strong);
+  }
+  h2{
+    font-family: 'Source Serif 4', serif;
+    font-weight: 500;
+    font-size: 22px;
+  }
+
+  /* ---------- Summary ---------- */
+  .summary{
+    font-family: 'Source Serif 4', serif;
+    font-size: 19px;
+    line-height: 1.6;
+    color: #2A2C29;
+    max-width: 64ch;
+  }
+
+  /* ---------- Metrics strip ---------- */
+  .metrics{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 0.5px solid var(--rule);
+    border-bottom: 0.5px solid var(--rule);
+    margin-top: 36px;
+  }
+  .metric{
+    padding: 16px 14px;
+    border-left: 0.5px solid var(--rule);
+    text-align: right;
+  }
+  .metric:first-child{ border-left: none; padding-left: 0; }
+  .metric .num{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 24px;
+    color: var(--ledger-red);
+    font-weight: 500;
+  }
+  .metric .label{
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-top: 4px;
+  }
+
+  /* ---------- Skills ---------- */
+  .skills-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 40px;
+  }
+  .skill-row{
+    border-top: 0.5px solid var(--rule);
+    padding-top: 14px;
+  }
+  .skill-cat{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ledger-red);
+    margin-bottom: 8px;
+  }
+  .skill-items{
+    font-size: 14.5px;
+    color: #2A2C29;
+  }
+
+  /* ---------- Projects ledger ---------- */
+  .project{
+    padding: 22px 0;
+    border-top: 0.5px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .project:first-child{ border-top: none; padding-top: 0; }
+  .project-num{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--rule-strong);
+    padding-top: 3px;
+    flex-shrink: 0;
+    width: 26px;
+  }
+  .project-body{ flex: 1; }
+  .project-title{
+    font-family: 'Source Serif 4', serif;
+    font-weight: 500;
+    font-size: 17.5px;
+  }
+  .project-desc{
+    font-size: 14px;
+    color: #2A2C29;
+    margin-top: 6px;
+    max-width: 56ch;
+  }
+  .project-tags{
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .project-tags span{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    background: var(--paper);
+    border: 0.5px solid var(--rule);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .project-link{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ledger-red);
+    text-decoration: none;
+    white-space: nowrap;
+    padding-top: 3px;
+    flex-shrink: 0;
+    border-bottom: 1px solid transparent;
+  }
+  .project-link:hover{ border-bottom-color: var(--ledger-red); }
+
+  /* ---------- Experience ledger ---------- */
+  .entry{
+    padding: 26px 0;
+    border-top: 0.5px solid var(--rule);
+  }
+  .entry:first-child{ border-top: none; padding-top: 0; }
+  .entry-head{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+  }
+  .entry-title{
+    font-family: 'Source Serif 4', serif;
+    font-weight: 500;
+    font-size: 19px;
+  }
+  .entry-company{
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-top: 2px;
+  }
+  .entry-dates{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .entry-bullets{
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .bullet{
+    display: flex;
+    gap: 10px;
+    font-size: 14.5px;
+    color: #2A2C29;
+    align-items: baseline;
+  }
+  .bullet .tick{
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--rule-strong);
+    font-size: 12px;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+  .bullet .stat{
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--ledger-red);
+    font-weight: 500;
+  }
+
+  /* ---------- Education / certs — two-column ledger ---------- */
+  .two-col{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .record-label{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .record-title{
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .record-sub{
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    margin-top: 3px;
+  }
+
+  /* ---------- Footer ---------- */
+  footer{
+    padding: 48px 0 80px;
+    text-align: center;
+  }
+  footer .close-line{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--rule-strong);
+    margin-bottom: 18px;
+  }
+  footer a.cta{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--ledger-red);
+    text-decoration: none;
+    border: 0.5px solid var(--ledger-red);
+    padding: 10px 22px;
+    border-radius: 2px;
+    display: inline-block;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  footer a.cta:hover{ background: var(--ledger-red); color: var(--paper); }
+
+  @media (max-width: 640px){
+    header{ padding: 64px 0 32px; }
+    .metrics{ grid-template-columns: 1fr 1fr; }
+    .metric:nth-child(3){ border-left: none; padding-left: 0; }
+    .metric:nth-child(2), .metric:nth-child(4){ }
+    .skills-grid{ grid-template-columns: 1fr; }
+    .two-col{ grid-template-columns: 1fr; }
+    .entry-head{ flex-direction: column; align-items: flex-start; }
+    .project{ flex-direction: column; }
+    .project-link{ padding-top: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Portfolio — Ledger No. 01</div>
+    <h1>Nikhil KG</h1>
+    <div class="role">Senior Data Analyst</div>
+    <div class="contact-line">
+      <span>Bengaluru, Karnataka</span>
+      <span class="sep">/</span>
+      <a href="mailto:nperaje@gmail.com">nperaje@gmail.com</a>
+      <span class="sep">/</span>
+      <a href="tel:+919845592709">+91 98455 92709</a>
+      <span class="sep">/</span>
+      <a href="https://www.linkedin.com/in/kgnikhil" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </header>
+
+  <section id="summary">
+    <div class="section-head">
+      <h2>Summary</h2>
+      <span class="section-num">01</span>
+    </div>
+    <p class="summary">
+      Data Analyst with 7 years of experience turning complex, ambiguous data problems into clear, actionable business recommendations. Strong hands-on
+expertise in SQL (complex joins, aggregations, benchmarking queries) and Python for exploratory data analysis (EDA), combined with a track record of
+owning end-to-end analytics — from data extraction through insight generation — for cross-functional stakeholders. Skilled at translating raw data into
+dashboards and reports that drive operational and business decisions, with experience spanning SaaS, financial services, and enterprise operations.
+    </p>
+    <div class="metrics">
+      <div class="metric">
+        <div class="num">7</div>
+        <div class="label">years experience</div>
+      </div>
+      <div class="metric">
+        <div class="num">90%</div>
+        <div class="label">manual effort cut</div>
+      </div>
+      <div class="metric">
+        <div class="num">2,000+</div>
+        <div class="label">files automated</div>
+      </div>
+      <div class="metric">
+        <div class="num">4</div>
+        <div class="label">companies</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="section-head">
+      <h2>Skills</h2>
+      <span class="section-num">02</span>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-row">
+        <div class="skill-cat">SQL &amp; data analysis</div>
+        <div class="skill-items">Advanced SQL, complex joins &amp; aggregations, PostgreSQL, BigQuery, data extraction, data mining</div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-cat">Python &amp; EDA</div>
+        <div class="skill-items">Pandas, exploratory data analysis, data wrangling, Regex, web scraping, NLTK</div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-cat">Visualization &amp; reporting</div>
+        <div class="skill-items">Tableau, Power BI, Looker Studio, Metabase, DAX, Power Query</div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-cat">Data engineering &amp; automation</div>
+        <div class="skill-items">ETL, data ingestion, REST / Egnyte / Slack API integration, Google Apps Script</div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-cat">Analytics &amp; insight</div>
+        <div class="skill-items">End-to-end analytics, root-cause analysis, ambiguous problem-solving</div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-cat">Stakeholder &amp; business</div>
+        <div class="skill-items">Cross-functional collaboration, business understanding, actionable recommendations</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="section-head">
+      <h2>Projects</h2>
+      <span class="section-num">03</span>
+    </div>
+
+    <div class="project">
+      <div class="project-num">01</div>
+      <div class="project-body">
+        <div class="project-title">Contract dashboard — report automation</div>
+        <div class="project-desc">ETL pipeline that ingests SaaS contract and invoice upload activity from Egnyte and Slack, transforms it, and serves a real-time Looker Studio dashboard for the ops team.</div>
+        <div class="project-tags"><span>Apps Script</span><span>Slack API</span><span>Egnyte API</span><span>Looker Studio</span></div>
+      </div>
+      <a class="project-link" href="https://nikhil-portfolio-delta-one.vercel.app/contract_dashboard.html" target="_blank" rel="noopener">view ↗</a>
+    </div>
+
+    <div class="project">
+      <div class="project-num">02</div>
+      <div class="project-body">
+        <div class="project-title">SaaSRadar — SaaS detection</div>
+        <div class="project-desc">Python NLP tool that scans raw transaction and SSO descriptions to identify known SaaS products via n-gram matching, with smart classification for new entities.</div>
+        <div class="project-tags"><span>Python</span><span>NLTK</span><span>n-gram</span><span>openpyxl</span></div>
+      </div>
+      <a class="project-link" href="https://nikhil-portfolio-delta-one.vercel.app/saasradar.html" target="_blank" rel="noopener">view ↗</a>
+    </div>
+
+    <div class="project">
+      <div class="project-num">03</div>
+      <div class="project-body">
+        <div class="project-title">SaaScan — AI metadata generation</div>
+        <div class="project-desc">Apps Script automation that enriches a SaaS product database using Gemini 2.5 Flash via Vertex AI, generating structured metadata and fetching logos in batches.</div>
+        <div class="project-tags"><span>Apps Script</span><span>Gemini AI</span><span>Vertex AI</span><span>Logo.dev</span></div>
+      </div>
+      <a class="project-link" href="https://nikhil-portfolio-delta-one.vercel.app/saascan.html" target="_blank" rel="noopener">view ↗</a>
+    </div>
+
+    <div class="project">
+      <div class="project-num">04</div>
+      <div class="project-body">
+        <div class="project-title">URLAnalyzer — website status check</div>
+        <div class="project-desc">Python automation that checks SaaS product URLs for reachability, detects domain changes, and identifies acquisitions or rebrands via page-title analysis.</div>
+        <div class="project-tags"><span>Python</span><span>Requests</span><span>BeautifulSoup</span><span>SerpAPI</span></div>
+      </div>
+      <a class="project-link" href="https://nikhil-portfolio-delta-one.vercel.app/urlanalyzer.html" target="_blank" rel="noopener">view ↗</a>
+    </div>
+
+    <div class="project">
+      <div class="project-num">05</div>
+      <div class="project-body">
+        <div class="project-title">Product lookup — Chrome extension</div>
+        <div class="project-desc">Chrome extension that reads the active tab's domain, queries a BigQuery-backed REST API against a products table, and surfaces matches instantly in the popup.</div>
+        <div class="project-tags"><span>Chrome Extension</span><span>BigQuery</span><span>REST API</span><span>JavaScript</span></div>
+      </div>
+      <a class="project-link" href="https://nikhil-portfolio-delta-one.vercel.app/chrome_extension_dashboard.html" target="_blank" rel="noopener">view ↗</a>
+    </div>
+
+    <div class="project">
+      <div class="project-num">06</div>
+      <div class="project-body">
+        <div class="project-title">Europe's fastest-growing companies</div>
+        <div class="project-desc">End-to-end pipeline that extracts the FT1000 ranking from Statista via its hidden JSON API, cleans it with Pandas, loads it to PostgreSQL, and visualizes growth trends in Metabase.</div>
+        <div class="project-tags"><span>Python</span><span>Pandas</span><span>PostgreSQL</span><span>Metabase</span></div>
+      </div>
+      <a class="project-link" href="https://nikhil-portfolio-delta-one.vercel.app/statista_pipeline.html" target="_blank" rel="noopener">view ↗</a>
+    </div>
+
+    <div class="project">
+      <div class="project-num">07</div>
+      <div class="project-body">
+        <div class="project-title">SaaS license benchmarking engine</div>
+        <div class="project-desc">Multi-layered SQL engine on BigQuery joining 18 tables and parsing semi-structured JSON pricing blobs, normalizing costs to surface per-seat pricing across four billing models.</div>
+        <div class="project-tags"><span>BigQuery</span><span>Standard SQL</span><span>JSON Parsing</span><span>CTEs</span></div>
+      </div>
+      <a class="project-link" href="https://nikhil-portfolio-delta-one.vercel.app/saas_benchmarking.html" target="_blank" rel="noopener">view ↗</a>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="section-head">
+      <h2>Experience</h2>
+      <span class="section-num">04</span>
+    </div>
+
+    <div class="entry">
+      <div class="entry-head">
+        <div>
+          <div class="entry-title">Data Operations Specialist</div>
+          <div class="entry-company">BetterCloud</div>
+        </div>
+        <div class="entry-dates">03 / 2024 — present</div>
+      </div>
+      <div class="entry-bullets">
+        <div class="bullet"><span class="tick">—</span><span>Built a Google Apps Script matcher for customer-specific vs. standard license names, hitting a <span class="stat">95%</span> match-score accuracy and streamlining the whole license taxonomy process.</span></div>
+        <div class="bullet"><span class="tick">—</span><span>Cut manual effort on license taxonomy work by <span class="stat">70%</span> by enabling data-driven decisions in place of manual review.</span></div>
+        <div class="bullet"><span class="tick">—</span><span>Automated tracking of contract uploads, processing status, and turnaround time, reducing manual tracking effort by <span class="stat">90%</span>.</span></div>
+        <div class="bullet"><span class="tick">—</span><span>Piped that data into Looker Studio for real-time visibility into upload volume and TAT deviations, cutting analysis time by <span class="stat">70%</span>.</span></div>
+        <div class="bullet"><span class="tick">—</span><span>Built a BigQuery SQL engine to normalize multi-model SaaS contract pricing across customers for per-seat cost comparisons in vendor negotiations.</span></div>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-head">
+        <div>
+          <div class="entry-title">Sr. Data Operations Associate</div>
+          <div class="entry-company">G2.com</div>
+        </div>
+        <div class="entry-dates">10 / 2021 — 03 / 2024</div>
+      </div>
+      <div class="entry-bullets">
+        <div class="bullet"><span class="tick">—</span><span>Wrote a Python + NLTK script to identify SaaS products inside unstructured financial transaction data, cutting manual effort by <span class="stat">80%</span>.</span></div>
+        <div class="bullet"><span class="tick">—</span><span>Automated end-to-end contract analysis and reporting with Apps Script and Looker, reducing report-building effort by <span class="stat">90%</span>.</span></div>
+        <div class="bullet"><span class="tick">—</span><span>Connected Egnyte and Slack APIs for real-time alerts on daily contract uploads.</span></div>
+        <div class="bullet"><span class="tick">—</span><span>Delivered an automation saving <span class="stat">200+</span> hours a year across <span class="stat">2,000+</span> files.</span></div>
+        <div class="bullet"><span class="tick">—</span><span>Built a JavaScript tool to generate regex patterns from transaction text, saving <span class="stat">90%</span> of manual pattern-writing time.</span></div>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-head">
+        <div>
+          <div class="entry-title">Data Operations Associate</div>
+          <div class="entry-company">Preqin</div>
+        </div>
+        <div class="entry-dates">11 / 2020 — 10 / 2021</div>
+      </div>
+      <div class="entry-bullets">
+        <div class="bullet"><span class="tick">—</span><span>Researched firm, fund, and transaction activity across the alternative asset universe to support data accuracy initiatives.</span></div>
+        <div class="bullet"><span class="tick">—</span><span>Improved database accuracy by <span class="stat">90%</span> by validating financial metrics from annual reports into the CRM.</span></div>
+        <div class="bullet"><span class="tick">—</span><span>Proposed a keyword classification approach for a Chrome extension, cutting article-tagging time by <span class="stat">60%</span>.</span></div>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-head">
+        <div>
+          <div class="entry-title">Sales Operations Associate</div>
+          <div class="entry-company">Hewlett Packard Enterprise</div>
+        </div>
+        <div class="entry-dates">03 / 2019 — 11 / 2020</div>
+      </div>
+      <div class="entry-bullets">
+        <div class="bullet"><span class="tick">—</span><span>Built Power BI dashboards with DAX and Power Query to surface KPIs for strategic planning.</span></div>
+        <div class="bullet"><span class="tick">—</span><span>Wrote an AutoHotKey script that cut data-handling time by <span class="stat">50%</span> through automated extraction across sources.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="education">
+    <div class="section-head">
+      <h2>Education &amp; certifications</h2>
+      <span class="section-num">05</span>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="record-label">Education</div>
+        <div class="record-title">B.E., Computer Science &amp; Engineering</div>
+        <div class="record-sub">NMAM Institute of Technology</div>
+      </div>
+      <div>
+        <div class="record-label">Certification</div>
+        <div class="record-title">IBM Data Engineering</div>
+        <div class="record-sub">Issued by Coursera</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="close-line">— end of record —</div>
+    <a class="cta" href="mailto:nperaje@gmail.com">Get in touch ↗</a>
+  </footer>
+
+</div>
+
+</body>
+</html>
